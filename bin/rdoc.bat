@@ -1,6 +1,6 @@
 @ECHO OFF
 IF NOT "%~f0" == "~f0" GOTO :WinNT
-@"jruby" -S "rdoc" %1 %2 %3 %4 %5 %6 %7 %8 %9
+@"jruby.exe" "C:/Users/David/Documents/jruby/bin/rdoc" %1 %2 %3 %4 %5 %6 %7 %8 %9
 GOTO :EOF
 :WinNT
-@"%~dp0jruby.exe" "%~dpn0" %*
+@"jruby.exe" "%~dpn0" %*
