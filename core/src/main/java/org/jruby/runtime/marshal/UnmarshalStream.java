@@ -212,7 +212,17 @@ public class UnmarshalStream extends InputStream {
                 rubyObj = RubyRegexp.unmarshalFrom(this);
                 break;
             case ':' :
-                rubyObj = RubySymbol.unmarshalFrom(this);
+                ByteList byteList = unmarshalString();
+                RubyString str = new RubyString(getRuntime(), getRuntime().getString(), byteList);
+                // TODO: input.registerLinkTarget(str);
+                
+                if (state.isIvarWaiting()) {
+                    defaultVariablesUnmarshal(str);
+                    state.setIvarWaiting(false);
+                }
+                
+                RubySymbol sym = RubySymbol.newSymbol(getRuntime(), str);
+                rubyObj = sym;
                 break;
             case '[' :
                 rubyObj = RubyArray.unmarshalFrom(this);

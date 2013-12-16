@@ -651,14 +651,6 @@ public class RubySymbol extends RubyObject implements MarshalEncoding {
         return recv.getRuntime().getSymbolTable().all_symbols();
     }
 
-    public static RubySymbol unmarshalFrom(UnmarshalStream input) throws java.io.IOException {
-        RubySymbol result = newSymbol(input.getRuntime(), RubyString.byteListToString(input.unmarshalString()));
-        
-        input.registerLinkTarget(result);
-        
-        return result;
-    }
-
     @Override
     public Object toJava(Class target) {
         if (target == String.class || target == CharSequence.class) return symbol;
