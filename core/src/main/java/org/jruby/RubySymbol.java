@@ -63,7 +63,6 @@ import org.jruby.runtime.ThreadContext;
 import org.jruby.runtime.builtin.IRubyObject;
 import org.jruby.runtime.callsite.FunctionalCachingCallSite;
 import org.jruby.runtime.encoding.MarshalEncoding;
-import org.jruby.runtime.marshal.UnmarshalStream;
 import org.jruby.util.ByteList;
 import org.jruby.util.PerlHash;
 import org.jruby.util.SipHashInline;
@@ -649,14 +648,6 @@ public class RubySymbol extends RubyObject implements MarshalEncoding {
     @Deprecated
     public static IRubyObject all_symbols(IRubyObject recv) {
         return recv.getRuntime().getSymbolTable().all_symbols();
-    }
-
-    public static RubySymbol unmarshalFrom(UnmarshalStream input) throws java.io.IOException {
-        RubySymbol result = newSymbol(input.getRuntime(), RubyString.byteListToString(input.unmarshalString()));
-        
-        input.registerLinkTarget(result);
-        
-        return result;
     }
 
     @Override
