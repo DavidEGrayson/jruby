@@ -50,6 +50,11 @@ public class UnmarshalCache {
         selectCache(value).add(value);
     }
 
+    public Reservation reserveSymbolSpot() {
+        symbols.add(null);
+        return new Reservation(symbols, symbols.size() - 1);
+    }
+
     private List selectCache(IRubyObject value) {
         return (value instanceof RubySymbol) ? symbols : links;
     }
@@ -78,9 +83,29 @@ public class UnmarshalCache {
 
     private RubySymbol symbolByIndex(int index) {
         try {
-            return symbols.get(index);
+            RubySymbol symbol = symbols.get(index);
+            if (symbol == null)
+            {
+              throw runtime.newArgumentError("bad symbol (unfinished)");
+            }
+            return symbol;
         } catch (IndexOutOfBoundsException e) {
-            throw runtime.newTypeError("bad symbol");
+            throw runtime.newArgumentError("bad symbol");
+        }
+    }
+    
+    public class Reservation {
+        private final List<RubySymbol> cache;
+        private final int index;
+        
+        public Reservation(List<RubySymbol> cache, int index) {
+          this.cache = cache;
+          this.index = index;
+        }
+        
+        public void register(RubySymbol value) {
+          assert value != null;
+          cache.set(index, value);
         }
     }
 }

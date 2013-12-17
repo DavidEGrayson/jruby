@@ -115,7 +115,6 @@ describe 'unmarshaled symbol' do
   
   context 'with instance variables' do
     it 'still allows linking to the symbol and its instance variable name' do
-      pending
       str = header + "[\x09" +
         ":\x0Db70062d8" +
         "I:\x0F4d66fd8d\u00B5\x06:\x06ET" +
@@ -127,11 +126,27 @@ describe 'unmarshaled symbol' do
   end
   
   specify "cannot be linked to until it is fully read" do
-    pending
-    expect { Marshal.load(header + "I:\x06a\x06;\x06T") }.to raise_error ArgumentError, "bad symbol"
+    expect { Marshal.load(header + "I:\x06a\x06;\x00T") }.to raise_error ArgumentError, "bad symbol (unfinished)"
+    
+    # NOTE: This is actually different from MRI; they store a value of 0 in their
+    # symbol cache temporarily and don't bother to check if the value when retrieving
+    # it from the cache.  No exception is raised.
+    # However, I think we need to test this behavior to make sure it doesn't
+    # crash the interpreter.    
+  end
+  
+  specify "raises an error for an invalid symbol link" do
+    expect { Marshal.load(header + "I;\x44") }.to raise_error ArgumentError, "bad symbol"
   end
   
   context "when the input specifies an encoding" do
+    pending "does not respect the encoding if it is from an IO object" do
+      # NOTE: Actually MRI does respect the encoding of strings read from
+      # an I/O object but I think that is a mistake.  I am writing this test
+      # to document a current good behavior of JRuby so people don't accidentally
+      # change it.
+    end
+  
     it "does not respect the encoding if it is from a string object" do
       pending
       data = (header + ":\x0D15db5e70").force_encoding("UTF-16")
