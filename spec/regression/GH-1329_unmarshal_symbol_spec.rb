@@ -5,6 +5,20 @@
 # https://github.com/jruby/jruby/pull/1338  Fixed two off-by-one errors in unmarshalInt
 # https://github.com/jruby/jruby/pull/1345  Look for encoding information in all instance variables
 
+require 'stringio'
+
+module GH1329
+  class StringIOWithForcedEncoding < StringIO
+    attr_accessor :forced_encoding
+
+    def read(*args)
+      str = super
+      str.force_encoding(forced_encoding) if str
+      str
+    end
+  end
+end
+  
 describe 'unmarshaled symbol' do
   let(:header) { "\x04\x08" }
   let(:ivar_indicator) { (ivars.empty? ? "" : "I") }
@@ -31,7 +45,6 @@ describe 'unmarshaled symbol' do
     end
     
     it 'with non-ASCII characters has the specified encoding' do
-      pending if ivars.empty?
       sym = Marshal.load(header + ivar_indicator + ":\x0F" + unique_symbol_data + "\u00B5" + ivars)
       expect(sym.encoding).to eq Encoding.find(encoding_name)
       expect(sym.to_s.valid_encoding?).to be true
@@ -41,7 +54,6 @@ describe 'unmarshaled symbol' do
   
   shared_examples_for 'encoding specified is not ASCII-compatible' do |encoding_name|
     it 'with 7-bit data has specified encoding' do
-      
       sym = Marshal.load(header + ivar_indicator + ":\x0D" + symbol_data_7bit + ivars)
       expect(sym.encoding).to eq Encoding.find(encoding_name)
       expect(sym.to_s.valid_encoding?).to be true
@@ -126,13 +138,14 @@ describe 'unmarshaled symbol' do
   end
   
   specify "cannot be linked to until it is fully read" do
-    expect { Marshal.load(header + "I:\x06a\x06;\x00T") }.to raise_error ArgumentError, "bad symbol (unfinished)"
-    
     # NOTE: This is actually different from MRI; they store a value of 0 in their
     # symbol cache temporarily and don't bother to check if the value when retrieving
     # it from the cache.  No exception is raised.
     # However, I think we need to test this behavior to make sure it doesn't
     # crash the interpreter.    
+    pending if RUBY_ENGINE == "ruby"
+    
+    expect { Marshal.load(header + "I:\x06a\x06;\x00T") }.to raise_error ArgumentError, "bad symbol (unfinished)"
   end
   
   specify "raises an error for an invalid symbol link" do
@@ -140,11 +153,17 @@ describe 'unmarshaled symbol' do
   end
   
   context "when the input specifies an encoding" do
-    pending "does not respect the encoding if it is from an IO object" do
+    it "does not respect the encoding if it is from an IO object" do
       # NOTE: Actually MRI does respect the encoding of strings read from
-      # an I/O object but I think that is a mistake.  I am writing this test
-      # to document a current good behavior of JRuby so people don't accidentally
-      # change it.
+      # an I/O object but I think that is a mistake.  This test documents a
+      # current good behavior of JRuby so people don't accidentally change it.
+      pending if RUBY_ENGINE == "ruby"
+      
+      sio = GH1329::StringIOWithForcedEncoding.new(header + ":\x0Dd3c5d01f")
+      sio.forced_encoding = Encoding.find("UTF-16")
+      sym = Marshal.load(sio)
+      pending
+      sym.encoding.should == Encoding.find("US-ASCII")
     end
   
     it "does not respect the encoding if it is from a string object" do
