@@ -9,4 +9,4 @@ describe "symbol table" do
     expect(sym2.encoding).to eq Encoding.find("US-ASCII")
     expect(sym1).to_not eq sym2
   end
-end if RUBY_VERSION >= '1.9'
+end if defined?(Encoding)
