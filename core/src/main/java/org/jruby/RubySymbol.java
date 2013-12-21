@@ -681,7 +681,7 @@ public class RubySymbol extends RubyObject implements MarshalEncoding {
         
         private final ReentrantLock tableLock = new ReentrantLock();
         private volatile SymbolEntry[] symbolTable;
-        private final ConcurrentHashMap<ByteList, RubySymbol> bytelistTable = new ConcurrentHashMap<ByteList, RubySymbol>(100, 0.75f, Runtime.getRuntime().availableProcessors());
+        //private final ConcurrentHashMap<ByteList, RubySymbol> bytelistTable = new ConcurrentHashMap<ByteList, RubySymbol>(100, 0.75f, Runtime.getRuntime().availableProcessors());
         private int size;
         private int threshold;
         private final float loadFactor;
@@ -699,116 +699,73 @@ public class RubySymbol extends RubyObject implements MarshalEncoding {
         // statistically affect only a small percentage (< 20%) of entries for a given rehash.
         static class SymbolEntry {
             final int hash;
-            final String name;
+            //final String name;  // TODO: why have this?
             final RubySymbol symbol;
             final SymbolEntry next;
             
-            SymbolEntry(int hash, String name, RubySymbol symbol, SymbolEntry next) {
+            SymbolEntry(int hash, RubySymbol symbol, SymbolEntry next) {
                 this.hash = hash;
-                this.name = name;
+                //this.name = name;
                 this.symbol = symbol;
                 this.next = next;
             }
         }
 
         public RubySymbol getSymbol(String name) {
-            int hash = name.hashCode();
-            SymbolEntry[] table = symbolTable;
-            
-            for (SymbolEntry e = getEntryFromTable(table, hash); e != null; e = e.next) {
-                if (isSymbolMatch(name, hash, e)) return e.symbol;
-            }
-            
-            return createSymbol(name, symbolBytesFromString(runtime, name), hash, table);
+            return getSymbol(new ByteList(ByteList.plain(name)));
         }
 
         public RubySymbol getSymbol(ByteList bytes) {
-            RubySymbol symbol = bytelistTable.get(bytes);
-            if (symbol != null) return symbol;
-
-            String name = bytes.toString();
-            int hash = name.hashCode();
+            RubySymbol symbol = null;
+            //RubySymbol symbol = bytelistTable.get(bytes);
+            //if (symbol != null) return symbol;
+            
             SymbolEntry[] table = symbolTable;
+
+            int hash = bytes.hashCode();  // does not depend on the encoding
             
             for (SymbolEntry e = getEntryFromTable(table, hash); e != null; e = e.next) {
-                if (isSymbolMatch(name, hash, e)) {
+                if (isSymbolMatch(bytes, hash, e)) {
                     symbol = e.symbol;
                     break;
                 }
             }
 
             if (symbol == null) {
-                symbol = createSymbol(name, bytes, hash, table);
+                symbol = createSymbol(bytes, hash, table);
             }
             
-            bytelistTable.put(bytes, symbol);
+            //bytelistTable.put(bytes, symbol);
 
             return symbol;
         }
 
         public RubySymbol fastGetSymbol(String internedName) {
-            SymbolEntry[] table = symbolTable;
-            
-            for (SymbolEntry e = getEntryFromTable(symbolTable, internedName.hashCode()); e != null; e = e.next) {
-                if (isSymbolMatch(internedName, e)) return e.symbol;
-            }
-            
-            return fastCreateSymbol(internedName, table);
+          return getSymbol(internedName);
         }
 
         private static SymbolEntry getEntryFromTable(SymbolEntry[] table, int hash) {
             return table[hash & (table.length - 1)];
         }
 
-        private static boolean isSymbolMatch(String name, int hash, SymbolEntry entry) {
-            return hash == entry.hash && name.equals(entry.name);
+        private static boolean isSymbolMatch(ByteList bytes, int hash, SymbolEntry entry) {
+            return hash == entry.hash && bytes.equals(entry.symbol.getBytes());
         }
 
-        private static boolean isSymbolMatch(String internedName, SymbolEntry entry) {
-            return internedName == entry.name;
-        }
-
-        private RubySymbol createSymbol(String name, ByteList value, int hash, SymbolEntry[] table) {
+        private RubySymbol createSymbol(ByteList value, int hash, SymbolEntry[] table) {
             ReentrantLock lock;
             (lock = tableLock).lock();
             try {
-                int index;                
+                int index = hash & (table.length - 1);
                 int potentialNewSize = size + 1;
                 
                 table = potentialNewSize > threshold ? rehash() : symbolTable;
 
-                // try lookup again under lock
-                for (SymbolEntry e = table[index = hash & (table.length - 1)]; e != null; e = e.next) {
-                    if (hash == e.hash && name.equals(e.name)) return e.symbol;
-                }
-                String internedName = name.intern();
+                // TODO: try lookup again under lock
+                
+                String internedName = value.toString();  // TODO: this is weird, maybe RubySymbol shouldn't have this internedName
                 RubySymbol symbol = new RubySymbol(runtime, internedName, value);
-                table[index] = new SymbolEntry(hash, internedName, symbol, table[index]);
-                size = potentialNewSize;
-                // write-volatile
-                symbolTable = table;
-                return symbol;
-            } finally {
-                lock.unlock();
-            }
-        }
-
-        private RubySymbol fastCreateSymbol(String internedName, SymbolEntry[] table) {
-            ReentrantLock lock;
-            (lock = tableLock).lock();
-            try {
-                int index;
-                int hash;
-                int potentialNewSize = size + 1;
-                
-                table = potentialNewSize > threshold ? rehash() : symbolTable;
-
-                // try lookup again under lock
-                for (SymbolEntry e = table[index = (hash = internedName.hashCode()) & (table.length - 1)]; e != null; e = e.next) {
-                    if (internedName == e.name) return e.symbol;
-                }
-                RubySymbol symbol = new RubySymbol(runtime, internedName);
-                table[index] = new SymbolEntry(hash, internedName, symbol, table[index]);
+                table[index] = new SymbolEntry(hash, symbol, table[index]);
                 size = potentialNewSize;
                 // write-volatile
                 symbolTable = table;
@@ -820,14 +777,7 @@ public class RubySymbol extends RubyObject implements MarshalEncoding {
         
         // backwards-compatibility, but threadsafe now
         public RubySymbol lookup(String name) {
-            int hash = name.hashCode();
-            SymbolEntry[] table;
-            
-            for (SymbolEntry e = (table = symbolTable)[hash & (table.length - 1)]; e != null; e = e.next) {
-                if (hash == e.hash && name.equals(e.name)) return e.symbol;
-            }
-
-            return null;
+            throw new UnsupportedOperationException("TODO: fix this");
         }
         
         public RubySymbol lookup(long id) {
@@ -903,7 +853,7 @@ public class RubySymbol extends RubyObject implements MarshalEncoding {
                         for (SymbolEntry p = e; p != lastRun; p = p.next) {
                             int k = p.hash & sizeMask;
                             SymbolEntry n = newTable[k];
-                            newTable[k] = new SymbolEntry(p.hash, p.name, p.symbol, n);
+                            newTable[k] = new SymbolEntry(p.hash, p.symbol, n);
                         }
                     }
                 }
