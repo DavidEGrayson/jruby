@@ -83,7 +83,7 @@ public class RubySymbol extends RubyObject implements MarshalEncoding {
     private RubySymbol(Ruby runtime, RubyString string) {
         super(runtime, runtime.getSymbol(), false);
 
-        assert string.isFrozen();
+        // assert string.isFrozen();
 
         this.string = string;
         this.symbolBytes = string.getByteList();
@@ -735,6 +735,8 @@ public class RubySymbol extends RubyObject implements MarshalEncoding {
         }
 
         private SymbolEntry createEntry(RubyString string) {
+            string = normalizeString(string);
+        
             ReentrantLock lock = tableLock;
             tableLock.lock();
             try {
@@ -757,6 +759,15 @@ public class RubySymbol extends RubyObject implements MarshalEncoding {
             } finally {
                 lock.unlock();
             }
+        }
+        
+        private RubyString normalizeString(RubyString string) {
+            string = (RubyString)string.dup();
+            if (string.isAsciiOnly() && string.getEncoding() != USASCIIEncoding.INSTANCE)
+            {
+                string.setEncoding(USASCIIEncoding.INSTANCE);
+            }
+            return string;
         }
         
         // backwards-compatibility, but threadsafe now
