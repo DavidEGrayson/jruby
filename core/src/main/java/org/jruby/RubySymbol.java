@@ -285,6 +285,7 @@ public class RubySymbol extends RubyObject implements MarshalEncoding {
     @JRubyMethod(name = "===", required = 1)
     @Override
     public IRubyObject op_eqq(ThreadContext context, IRubyObject other) {
+        //System.out.println("matching symbol " + toString() + " (" + getObjectId() + ") to object " + ((RubyBasicObject)other).getObjectId());
         return super.op_equal(context, other);
     }
 
