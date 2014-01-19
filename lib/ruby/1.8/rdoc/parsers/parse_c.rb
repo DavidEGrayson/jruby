@@ -4,7 +4,12 @@
 require "rdoc/code_objects"
 require "rdoc/parsers/parserfactory"
 require "rdoc/options"
-require "rdoc/rdoc"
+
+# There was a circular dependency between this file and rdoc.rb which results
+# in this file being loaded twice and a causes a warning because KNOWN_CLASSES
+# was already defined.
+# David commented out the line below to fix this.
+# require "rdoc/rdoc"
 
 module RDoc
 

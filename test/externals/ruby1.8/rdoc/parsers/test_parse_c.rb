@@ -1,7 +1,7 @@
 require 'stringio'
 require 'tempfile'
 require 'test/unit'
-require 'rdoc/parsers/parse_c'
+require 'rdoc/rdoc'
 
 class RDoc::C_Parser
   attr_accessor :classes
