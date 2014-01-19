@@ -24,6 +24,14 @@ class TestRdocC_Parser < Test::Unit::TestCase
   end
 
   def teardown
+    # DavidEGrayson had to add the line below to fix an unfortunate problem
+    # in JRuby that was causing a warning.  It is documented here:
+    #   http://jira.codehaus.org/browse/JRUBY-6477
+    #   http://jira.codehaus.org/browse/JRUBY-6688
+    # This is related too:
+    #   http://jira.codehaus.org/browse/JRUBY-3769
+    @tempfile.close
+
     @tempfile.unlink
   end
 
