@@ -1,5 +1,15 @@
 require 'test/unit'
 
+def without_warnings
+  begin
+    old_verbose = $VERBOSE
+    $VERBOSE = nil
+    yield
+  ensure
+    $VERBOSE = old_verbose
+  end
+end
+
 class TestArray < Test::Unit::TestCase
   def test_0_literal
     assert_equal([1, 2, 3, 4], [1, 2] + [3, 4])
@@ -533,7 +543,9 @@ class TestArray < Test::Unit::TestCase
     assert_equal(5, a.count)
     assert_equal(2, a.count(1))
     assert_equal(3, a.count {|x| x % 2 == 1 })
-    assert_equal(2, a.count(1) {|x| x % 2 == 1 })
+    without_warnings do
+      assert_equal(2, a.count(1) {|x| x % 2 == 1 })
+    end
     assert_raise(ArgumentError) { a.count(0, 1) }
   end
 
