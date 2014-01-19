@@ -1,4 +1,5 @@
 require 'test/unit'
+require File.dirname(__FILE__) + '/helper'
 
 class Array
   def iter_test1
@@ -449,7 +450,9 @@ class TestIterator < Test::Unit::TestCase
   end
 
   def _test_return_trace_func(x)
-    set_trace_func(proc {})
+    without_warnings do
+      set_trace_func(proc {})
+    end
     [].fetch(2) {return x}
   ensure
     set_trace_func(nil)

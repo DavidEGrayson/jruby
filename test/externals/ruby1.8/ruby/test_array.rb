@@ -1,14 +1,5 @@
 require 'test/unit'
-
-def without_warnings
-  begin
-    old_verbose = $VERBOSE
-    $VERBOSE = nil
-    yield
-  ensure
-    $VERBOSE = old_verbose
-  end
-end
+require File.dirname(__FILE__) + '/helper'
 
 class TestArray < Test::Unit::TestCase
   def test_0_literal
