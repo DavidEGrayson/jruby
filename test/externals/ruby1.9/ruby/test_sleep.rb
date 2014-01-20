@@ -2,7 +2,7 @@ require 'test/unit'
 
 class TestSleep < Test::Unit::TestCase
   def test_sleep_5sec
-    GC.disable
+    GC.disable unless RUBY_ENGINE == "jruby"
     start = Time.now
     sleep 5
     slept = Time.now-start
@@ -10,6 +10,6 @@ class TestSleep < Test::Unit::TestCase
     assert_operator(bottom, :<=, slept)
     assert_operator(slept, :<=, 6.0, "[ruby-core:18015]: longer than expected")
   ensure
-    GC.enable
+    GC.enable unless RUBY_ENGINE == "jruby"
   end
 end

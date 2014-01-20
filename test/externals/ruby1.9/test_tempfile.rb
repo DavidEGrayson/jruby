@@ -81,7 +81,9 @@ class TestTempfile < Test::Unit::TestCase
     path = tempfile.path
     begin
       assert_nothing_raised do
-        tempfile.unlink
+        without_warnings do
+          tempfile.unlink
+        end
       end
     ensure
       tempfile.close

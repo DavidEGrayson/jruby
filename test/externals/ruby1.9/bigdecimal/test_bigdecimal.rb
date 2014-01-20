@@ -1133,13 +1133,12 @@ class TestBigDecimal < Test::Unit::TestCase
 
   def test_split_under_gc_stress
     bug3258 = '[ruby-dev:41213]'
-    stress, GC.stress = GC.stress, true
-    10.upto(20) do |i|
-      b = BigDecimal.new("1"+"0"*i)
-      assert_equal([1, "1", 10, i+1], b.split, bug3258)
+    under_gc_stress do
+      10.upto(20) do |i|
+        b = BigDecimal.new("1"+"0"*i)
+        assert_equal([1, "1", 10, i+1], b.split, bug3258)
+      end
     end
-  ensure
-    GC.stress = stress
   end
 
   def test_coerce_under_gc_stress
