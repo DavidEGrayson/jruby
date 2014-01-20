@@ -272,7 +272,7 @@ class TestMarshal < Test::Unit::TestCase
     assert_equal(ary, Marshal.load(Marshal.dump(ary)), bug2548)
   end
 
-  ClassUTF8 = eval("class R\u{e9}sum\u{e9}; self; end")
+  ClassUTF8 = eval("class R\u{e9}sum\u{e9}Class; self; end")
 
   iso_8859_1 = Encoding::ISO_8859_1
 
