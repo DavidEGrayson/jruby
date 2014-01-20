@@ -1,5 +1,4 @@
 require 'test/unit'
-require File.dirname(__FILE__) + '/helper'
 
 class TestArray < Test::Unit::TestCase
   def test_0_literal

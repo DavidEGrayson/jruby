@@ -11,7 +11,7 @@ class TestGc < Test::Unit::TestCase
 
   def test_gc
     prev_stress = GC.stress
-    GC.stress = false unless RUBY_ENGINE == "jruby"
+    GC.stress = false
 
     assert_nothing_raised do
       1.upto(10000) {
@@ -32,26 +32,22 @@ class TestGc < Test::Unit::TestCase
     GC.start
     assert true   # reach here or dumps core
 
-    GC.stress = prev_stress unless RUBY_ENGINE == "jruby"
+    GC.stress = prev_stress
   end
 
   def test_enable_disable
     # These functions (or atleast enable and disable) do nothing in JRuby.
     # They do produce warnings though.
-    without_warnings do
-      begin
-        GC.enable
-        assert_equal(false, GC.enable)
-        assert_equal(false, GC.disable)
-        assert_equal(true, GC.disable)
-        assert_equal(true, GC.disable)
-        assert_nil(GC.start)
-        assert_equal(true, GC.enable)
-        assert_equal(false, GC.enable)
-      ensure
-        GC.enable
-      end
-    end
+    GC.enable
+    assert_equal(false, GC.enable)
+    assert_equal(false, GC.disable)
+    assert_equal(true, GC.disable)
+    assert_equal(true, GC.disable)
+    assert_nil(GC.start)
+    assert_equal(true, GC.enable)
+    assert_equal(false, GC.enable)
+  ensure
+    GC.enable
   end
 
   def test_count
@@ -75,7 +71,7 @@ class TestGc < Test::Unit::TestCase
   def test_singleton_method
     prev_stress = GC.stress
     assert_nothing_raised("[ruby-dev:42832]") do
-      without_warnings { GC.stress = true }
+      GC.stress = true
       10.times do
         obj = Object.new
         def obj.foo() end
@@ -84,7 +80,7 @@ class TestGc < Test::Unit::TestCase
       end
     end
   ensure
-    without_warnigns { GC.stress = prev_stress }
+    GC.stress = prev_stress
   end
 
   def test_gc_parameter

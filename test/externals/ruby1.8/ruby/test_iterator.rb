@@ -1,5 +1,4 @@
 require 'test/unit'
-require File.dirname(__FILE__) + '/helper'
 
 class Array
   def iter_test1

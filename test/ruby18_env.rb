@@ -1,1 +1,0 @@
-JRuby.runtime.warnings.disable_warnings_for_tests

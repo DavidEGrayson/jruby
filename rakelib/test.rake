@@ -126,6 +126,7 @@ namespace :test do
     t.ruby_opts << '-I test/externals/ruby1.9/ruby'
     t.ruby_opts << '-r ./test/ruby19_env.rb'
     t.ruby_opts << '-r minitest/excludes'
+    t.ruby_opts << '-r ./test/warnings.rb'
   end
   
   permute_tests(:mri20, compile_flags) do |t|
@@ -146,6 +147,7 @@ namespace :test do
     t.ruby_opts << '-I test/externals/ruby2.0/ruby'
     t.ruby_opts << '-r ./test/ruby20_env.rb'
     t.ruby_opts << '-r minitest/excludes'
+    t.ruby_opts << '-r ./test/warnings.rb'
   end
   
   permute_tests(:mri, compile_flags) do |t|
@@ -161,7 +163,7 @@ namespace :test do
     t.verbose = true
     t.ruby_opts << '-J-ea'
     t.ruby_opts << '--1.8'
-    t.ruby_opts << '-r ./test/ruby18_env.rb'
+    t.ruby_opts << '-r ./test/warnings.rb'
   end
 
   permute_tests(:jruby19, compile_flags, 'test:compile') do |t|
