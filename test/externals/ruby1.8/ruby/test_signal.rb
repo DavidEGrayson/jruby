@@ -21,7 +21,7 @@ class TestSignal < Test::Unit::TestCase
 
     begin
       $x = 0
-      oldtrap = trap "SIGINT", proc{|sig| $x = 2}
+      oldtrap = trap "SIGINT", proc{$x = 2}
       Process.kill "SIGINT", $$
       t = Time.now
       while (Time.now - t) < 5
