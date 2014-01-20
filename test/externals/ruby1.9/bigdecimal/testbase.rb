@@ -31,4 +31,5 @@ module TestBigDecimalBase
     ensure
       GC.stress = stress
     end
+  end
 end
