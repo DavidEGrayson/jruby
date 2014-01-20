@@ -59,6 +59,7 @@ public interface IRubyWarnings {
         ENV_VARS_FROM_CLI_METHOD,
         FIXNUMS_NOT_SYMBOLS,
         FLOAT_OUT_OF_RANGE,
+        FULL_TRACE_DISABLED,
         GLOBAL_NOT_INITIALIZED,
         GROUPED_EXPRESSION,
         INEFFECTIVE_GLOBAL,

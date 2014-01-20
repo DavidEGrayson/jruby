@@ -2937,7 +2937,7 @@ public final class Ruby {
     public void addEventHook(EventHook hook) {
         if (!RubyInstanceConfig.FULL_TRACE_ENABLED) {
             // without full tracing, many events will not fire
-            getWarnings().warn("tracing (e.g. set_trace_func) will not capture all events without --debug flag");
+            getWarnings().warnOnce(ID.FULL_TRACE_DISABLED, "tracing (e.g. set_trace_func) will not capture all events without --debug flag");
         }
         eventHooks.add(hook);
         hasEventHooks = true;

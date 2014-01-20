@@ -164,6 +164,7 @@ public class RubyWarnings implements IRubyWarnings, WarnCallback {
         oncelers.add(ID.GC_ENABLE_UNIMPLEMENTED);
         oncelers.add(ID.GC_DISABLE_UNIMPLEMENTED);
         oncelers.add(ID.SAFE_NOT_SUPPORTED);
+        oncelers.add(ID.FULL_TRACE_DISABLED);
     }
 
     private static RubyStackTraceElement[] getRubyStackTrace(Ruby runtime) {
