@@ -159,6 +159,13 @@ public class RubyWarnings implements IRubyWarnings, WarnCallback {
         warn(id, fileName, lineNumber, message);
     }
 
+    public void disableWarningsForTests() {
+        oncelers.add(ID.GC_STRESS_UNIMPLEMENTED);
+        oncelers.add(ID.GC_ENABLE_UNIMPLEMENTED);
+        oncelers.add(ID.GC_DISABLE_UNIMPLEMENTED);
+        oncelers.add(ID.SAFE_NOT_SUPPORTED);
+    }
+
     private static RubyStackTraceElement[] getRubyStackTrace(Ruby runtime) {
         ThreadContext context = runtime.getCurrentContext();
         RubyStackTraceElement[] stack = context.createWarningBacktrace(runtime);
