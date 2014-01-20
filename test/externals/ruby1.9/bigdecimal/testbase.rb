@@ -19,17 +19,9 @@ module TestBigDecimalBase
   end
 
   def under_gc_stress
-    # Avoid "warning: GC.stress= does nothing on JRuby"
-    if RUBY_ENGINE == "jruby"
-      return yield
-    end
-
-    begin
-      stress = GC.stress
-      GC.stress = true
-      yield
-    ensure
-      GC.stress = stress
-    end
+    stress, GC.stress = GC.stress, true
+    yield
+  ensure
+    GC.stress = stress
   end
 end
