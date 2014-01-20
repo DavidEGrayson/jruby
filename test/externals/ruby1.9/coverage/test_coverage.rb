@@ -1,6 +1,7 @@
 require "test/unit"
 require "coverage"
 require "tmpdir"
+require_relative "../helper"
 
 class TestCoverage < Test::Unit::TestCase
   def test_result_without_start
@@ -8,7 +9,9 @@ class TestCoverage < Test::Unit::TestCase
   end
   def test_result_with_nothing
     Coverage.start
-    result = Coverage.result
+    without_warnings do
+      result = Coverage.result
+    end
     assert_kind_of(Hash, result)
     result.each do |key, val|
       assert_kind_of(String, key)
