@@ -161,6 +161,7 @@ namespace :test do
     t.verbose = true
     t.ruby_opts << '-J-ea'
     t.ruby_opts << '--1.8'
+    t.ruby_opts << '-r ./test/ruby18_env.rb'
   end
 
   permute_tests(:jruby19, compile_flags, 'test:compile') do |t|

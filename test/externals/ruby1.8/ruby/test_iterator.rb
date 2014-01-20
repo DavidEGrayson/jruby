@@ -450,9 +450,7 @@ class TestIterator < Test::Unit::TestCase
   end
 
   def _test_return_trace_func(x)
-    without_warnings do
-      set_trace_func(proc {})
-    end
+    set_trace_func(proc {})
     [].fetch(2) {return x}
   ensure
     set_trace_func(nil)
