@@ -241,7 +241,9 @@ class TestBigDecimal < Test::Unit::TestCase
     format = java.text.DecimalFormat.new("#,##0.00")
     locale_separator = java.text.DecimalFormatSymbols.new().getDecimalSeparator()
     value = java.math.BigDecimal.new("10")
-    assert_equal "10" + locale_separator.chr + "00", format.format(value)
+    assert_equal "10" + locale_separator.chr + "00", without_warnings { format.format(value) }
+    # The without_warnings above suppresses this warnings:
+    # "warning: ambiguous Java methods found, using format(java.lang.Object)"
   end
 
   #JRUBY-5190
