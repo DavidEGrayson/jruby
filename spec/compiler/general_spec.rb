@@ -58,7 +58,7 @@ describe "JRuby's compiler" do
     expect(compile_and_run("{}")).to eq({})
     expect(compile_and_run("a = {:foo => {:bar => 5.5}}; a")).to eq({:foo => {:bar => 5.5}})
     expect(compile_and_run("a = /foo/; a")).to eq(/foo/)
-    expect(compile_and_run("1..2")).to eq (1..2)
+    expect(compile_and_run("1..2")).to eq(1..2)
   end
   
   it "compiles interpolated strings" do
@@ -104,7 +104,7 @@ describe "JRuby's compiler" do
   it "compiles regexp matches" do
     expect(compile_and_run("/foo/ =~ 'foo'")).to eq 0
     expect(compile_and_run("'foo' =~ /foo/")).to eq 0
-    expect(compile_and_run(":aaa =~ /foo/")).to (is19 ? be_nil : be_false)
+    expect(compile_and_run(":aaa =~ /foo/")).to(is19 ? be_nil : be_false)
   end
 
   it "compiles method definitions" do
