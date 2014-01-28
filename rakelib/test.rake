@@ -263,6 +263,7 @@ namespace :test do
     t.ruby_opts << '-J-ea'
     t.ruby_opts << '--1.8'
     t.ruby_opts << '-X+O'
+    t.ruby_opts << '-rtest/warnings.rb'
   end
 
   permute_tests(:slow, compile_flags) do |t|

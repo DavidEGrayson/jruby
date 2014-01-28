@@ -55,7 +55,7 @@ class TestBlocksProcs < Test::Unit::TestCase
     def o.f; yield *[[]]; end;     o.f {|a| assert_equal([], a)}
     def o.f; yield *[*[]]; end;    o.f {|a| assert_nil(a)}
     def o.f; yield *[*[1]]; end;   o.f {|a| assert_equal(1, a)}
-    def o.f; yield *[*[1,2]]; end; o.f {|a| assert_equal(IS19 ? 1 : [1,2], a)}
+    def o.f; yield *[*[1,2]]; end; without_warnings { o.f {|a| assert_equal(IS19 ? 1 : [1,2], a)} }
     
     def o.f; yield nil; end;       o.f {|*a| assert_equal([nil], a)}
     def o.f; yield 1; end;         o.f {|*a| assert_equal([1], a)}
