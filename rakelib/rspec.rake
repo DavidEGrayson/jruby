@@ -31,9 +31,9 @@ namespace :spec do
   {"" => "--1.8", "19" => "--1.9"}.each do |version_suffix, version_arg|
     permute_specs "ji#{version_suffix}", compile_flags, "test:compile" do |t|
       t.ruby_opts = ["-I#{rake_location}", version_arg]
+      t.ruby_opts << "-rtest/warnings.rb"
       t.rspec_opts ||= []
       t.rspec_opts << "--options spec/java_integration/spec.quiet.opts"
-      t.rspec_opts << "-rtest/warnings.rb"
       t.pattern = 'spec/java_integration/**/*_spec.rb'
     end
 
