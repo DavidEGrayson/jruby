@@ -15,7 +15,8 @@ describe "java.util.concurrent.Executors" do
         EXECUTOR_TEST_VALUE
       end
     end
-    lambda { @future = @executor.submit(cls.new) }.should_not raise_error(TypeError)
+    c = cls.new
+    @future = without_warnings { @executor.submit(c) }
     @future.get.should == EXECUTOR_TEST_VALUE
   end
   
