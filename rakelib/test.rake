@@ -180,6 +180,7 @@ namespace :test do
     t.ruby_opts << '-J-ea'
     t.ruby_opts << '-J-cp test:test/target/test-classes:core/target/test-classes'
     t.ruby_opts << '--1.9'
+    t.ruby_opts << '-r ./test/warnings.rb'
   end
 
   permute_tests(:jruby20, compile_flags, 'test:compile') do |t|
@@ -196,6 +197,7 @@ namespace :test do
     t.ruby_opts << '-J-ea'
     t.ruby_opts << '-J-cp test:test/target/test-classes:core/target/test-classes'
     t.ruby_opts << '--2.0'
+    t.ruby_opts << '-r ./test/warnings.rb'
   end
 
   permute_tests(:jruby, compile_flags, 'test:compile') do |t|
@@ -212,6 +214,7 @@ namespace :test do
     t.ruby_opts << '-J-ea'
     t.ruby_opts << '-J-cp test:test/target/test-classes:core/target/test-classes'
     t.ruby_opts << '--1.8'
+    t.ruby_opts << '-r ./test/warnings.rb'
   end
 
   permute_tests(:rubicon19, compile_flags) do |t|
