@@ -15,11 +15,11 @@ end
 describe "An overloaded Java static method" do
   it "should be called with the most exact overload" do
     obj = java.lang.Integer.new(1)
-    CoreTypeMethods.getType(1).should == "long"
+    without_warnings { CoreTypeMethods.getType(1) }.should == "long"
     CoreTypeMethods.getType(1, obj).should == "long,object"
     CoreTypeMethods.getType(1, obj, obj).should == "long,object,object"
     CoreTypeMethods.getType(1, obj, obj, obj).should == "long,object,object,object"
-    CoreTypeMethods.getType(1.0).should == "double"
+    without_warnings { CoreTypeMethods.getType(1.0) }.should == "double"
     CoreTypeMethods.getType(1.0, obj).should == "double,object"
     CoreTypeMethods.getType(1.0, obj, obj).should == "double,object,object"
     CoreTypeMethods.getType(1.0, obj, obj, obj).should == "double,object,object,object"
@@ -74,11 +74,11 @@ describe "An overloaded Java instance method" do
   it "should be called with the most exact overload" do
     obj = java.lang.Integer.new(1)
     ctm = CoreTypeMethods.new
-    ctm.getTypeInstance(1).should == "long"
+    without_warnings { ctm.getTypeInstance(1) }.should == "long"
     ctm.getTypeInstance(1, obj).should == "long,object"
     ctm.getTypeInstance(1, obj, obj).should == "long,object,object"
     ctm.getTypeInstance(1, obj, obj, obj).should == "long,object,object,object"
-    ctm.getTypeInstance(1.0).should == "double"
+    without_warnings { ctm.getTypeInstance(1.0) }.should == "double"
     ctm.getTypeInstance(1.0, obj).should == "double,object"
     ctm.getTypeInstance(1.0, obj, obj).should == "double,object,object"
     ctm.getTypeInstance(1.0, obj, obj, obj).should == "double,object,object,object"
