@@ -33,6 +33,7 @@ namespace :spec do
       t.ruby_opts = ["-I#{rake_location}", version_arg]
       t.rspec_opts ||= []
       t.rspec_opts << "--options spec/java_integration/spec.quiet.opts"
+      t.rspec_opts << "-rtest/warnings.rb"
       t.pattern = 'spec/java_integration/**/*_spec.rb'
     end
 
