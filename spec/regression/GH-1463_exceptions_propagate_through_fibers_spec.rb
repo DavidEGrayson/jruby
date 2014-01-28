@@ -70,4 +70,4 @@ describe "A fiber" do
       fiber_exceptions.should be_empty
     end
   end
-end
+end if defined?(Fiber)
