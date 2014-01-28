@@ -233,7 +233,7 @@ class TestBlock < Test::Unit::TestCase
   def test_block_hash_args
     h = Hash.new
     bar(1, 2) { |h[:v], h[:u]| }
-    puts h[:v], h[:u]
+    assert_equal h, {:v => 1, :u => 2}
   end
 
   def block_arg_that_breaks_while(&block)
