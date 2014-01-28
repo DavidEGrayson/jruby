@@ -28,8 +28,12 @@ describe "A Java Throwable" do
   
   it "implements to_str to call to_s" do
     ex = java.lang.Exception.new
-    def ex.to_s
-      'hello'
+
+    # Avoid the "singleton on non-persistent Java type" warning
+    without_warnings do
+      def ex.to_s
+        'hello'
+      end
     end
     
     expect(ex.to_str).to eq 'hello'
