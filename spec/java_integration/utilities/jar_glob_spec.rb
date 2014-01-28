@@ -1,4 +1,4 @@
-# David marked several of these tests as pending because:
+# DavidEGrayson marked several of these tests as pending because:
 #  * They were broken by commit b9f60e0b in January 2014,
 #  * They don't actually test JRuby but they test some weird methods defined above (??),
 #  * The feature they test is probably not present in MRI
