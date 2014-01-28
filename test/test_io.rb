@@ -75,7 +75,7 @@ class TestIO < Test::Unit::TestCase
     assert_nothing_raised { g.write "" }
     assert_nothing_raised { g.puts "" }
     assert_nothing_raised { g.putc 'c' }
-    assert_raises(Errno::EBADF) { g.syswrite "" }
+    assert_raises(Errno::EBADF) { without_warnings { g.syswrite "" } }
   end
 
   def test_ios_with_incompatible_flags
