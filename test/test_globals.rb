@@ -83,11 +83,6 @@ class TestGlobals < Test::Unit::TestCase
   end
 
   def test_aliases_backref_globals
-    alias $POSTMATCH $'
-    alias $PREMATCH $`
-    alias $MATCH $&
-    alias $LAST_MATCH_INFO $~
-
     /^is/ =~ "isFubared"
 
     assert_not_nil($LAST_MATCH_INFO)
