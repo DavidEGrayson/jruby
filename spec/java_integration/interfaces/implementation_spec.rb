@@ -567,7 +567,7 @@ describe "Coercion of normal ruby objects" do
   it "should allow an object to be coerced as a return type of a java method" do
     ri = double "returns interface"
     value = double "return value runnable"
-    ri.stub!(:getRunnable).and_return value
+    ri.stub(:getRunnable).and_return value
 
     consumer = ReturnsInterfaceConsumer.new(ri)
     runnable = consumer.getRunnable

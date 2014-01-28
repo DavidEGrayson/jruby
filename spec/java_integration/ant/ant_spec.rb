@@ -40,7 +40,7 @@ describe Ant, '.load' do
   end
 
   def stubs_file!
-    File.stub!(:exist?).and_return false
+    File.stub(:exist?).and_return false
     File.should_receive(:exist?).with(ENV['JAVA_HOME']).and_return true
     File.should_receive(:exist?).with(@tools_jar).and_return true
     File.should_receive(:exist?).with(@classes_zip).and_return true
