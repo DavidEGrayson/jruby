@@ -1,26 +1,6 @@
 require 'test/unit'
 
 class TestGlobals < Test::Unit::TestCase
-  def check_global_variable
-    assert_equal "a global variable.", $output
-  end
-  def test_global_scope
-    $output = "a global variable."
-    check_global_variable
-  end
-
-  def test_global_alias
-    $bar = 5
-    alias $foo $bar
-    assert_equal 5, $foo
-
-    $bar = 10
-    assert_equal 10, $foo
-
-    $foo = 5
-    assert_equal 5, $bar
-  end
-
   # Make sure $@ == nil if $! is not nil and $!.backtrace is an array
   class MyWobblyError < StandardError
     def initialize(backtrace) ; @backtrace = backtrace ; end
@@ -67,7 +47,7 @@ class TestGlobals < Test::Unit::TestCase
   end
   
   def test_locally_scoped_globals
-    assert_nothing_raised { print }
+    assert_nothing_raised { print '' }
     assert_nothing_raised { $_.to_s }
     assert_nothing_raised { $~.to_s }
     $_ = 'one'
@@ -87,7 +67,7 @@ class TestGlobals < Test::Unit::TestCase
 
     assert_not_nil($LAST_MATCH_INFO)
     assert_equal($~, $LAST_MATCH_INFO)
-	assert_equal "Fubared", $'
+    assert_equal "Fubared", $'
     assert_equal $', $POSTMATCH
     assert_equal "", $`
     assert_equal $`, $PREMATCH
@@ -97,16 +77,19 @@ class TestGlobals < Test::Unit::TestCase
   
   # This test just checks if JRuby allows $= assignment (and ignored)
   def test_english_ignore_case
-    alias $IGNORECASE $=
-    assert_not_nil($IGNORECASE)
-    assert_equal($=, $IGNORECASE)
-    assert_nil("fOo" =~ /foo/)
-    assert("fOo" =~ /foo/i)
-    $= = true
-    # The following matches on CRuby 1.8 (ignore case) but not on CRuby 1.9 and JRuby (both on 1.8 and 1.9 modes.)
-    # assert("fOo" =~ /foo/)
-    assert("fOo" =~ /foo/i)
-    $= = false
+    # Suppress the warnings about how $= is no longer effective
+    without_warnings do
+      alias $IGNORECASE $=
+      assert_not_nil($IGNORECASE)
+      assert_equal($=, $IGNORECASE)
+      assert_nil("fOo" =~ /foo/)
+      assert("fOo" =~ /foo/i)
+      $= = true
+      # The following matches on CRuby 1.8 (ignore case) but not on CRuby 1.9 and JRuby (both on 1.8 and 1.9 modes.)
+      # assert("fOo" =~ /foo/)
+      assert("fOo" =~ /foo/i)
+      $= = false
+    end
   end
 
   # JRUBY-1396, $? was returning Java null instead of nil when uninitialized
