@@ -1,6 +1,6 @@
 project 'JRuby Dist' do
 
-  version = '1.7.10' #File.read( File.join( basedir, '..', '..', 'VERSION' ) )
+  version = '1.7.11' #File.read( File.join( basedir, '..', '..', 'VERSION' ) )
 
   model_version '4.0.0'
   id "org.jruby:jruby-dist:#{version}"
