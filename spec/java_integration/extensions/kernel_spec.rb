@@ -1,9 +1,12 @@
 require File.dirname(__FILE__) + "/../spec_helper"
 
-java_import "java.lang.NullPointerException"
-
 describe "Kernel Ruby extensions" do
   it "allow raising a Java exception" do
-    lambda { raise NullPointerException.new }.should raise_error(NullPointerException)
+    begin
+      raise java.lang.NullPointerException.new
+    rescue java.lang.NullPointerException => e
+      @raised_npe = true
+    end
+    expect(@raised_npe).to eq true
   end
 end
