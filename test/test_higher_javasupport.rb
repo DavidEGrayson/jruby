@@ -233,9 +233,13 @@ class TestHigherJavasupport < Test::Unit::TestCase
   end
 
   def test_already_loaded_proxies_should_still_see_extend_proxy
-    JavaUtilities.extend_proxy('java.util.List') do
-      def foo
-        true
+    # Suppress the warning "proxy extender added after proxy class
+    #   created for java.util.List"
+    without_warnings do
+      JavaUtilities.extend_proxy('java.util.List') do
+        def foo
+          true
+        end
       end
     end
     assert_equal(true, Foo::ArrayList.new.foo)
@@ -793,7 +797,11 @@ CLASSDEF
   # JRUBY-3476
   def test_object_with_singleton_returns_java_class
     x = java.lang.Object.new
-    def x.foo; end
+    # Suppress warning: singleton on non-persistent Java type
+    #   Java::JavaLang::Object (http://wiki.jruby.org/Persistence)
+    without_warnings do
+      def x.foo; end
+    end
     assert(x.java_class.kind_of?Java::JavaClass)
   end
 
