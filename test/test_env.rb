@@ -41,17 +41,17 @@ class TestEnv < Test::Unit::TestCase
   IS_WINDOWS = RUBY_PLATFORM =~ /mswin/i || (RUBY_PLATFORM =~ /java/i && ENV_JAVA['os.name'] =~ /windows/i)
 
   def test_bracket
-    assert_equal(nil, ENV['test'])
-    assert_equal(nil, ENV['TEST'])
+    assert_equal(nil, ENV['testb'])
+    assert_equal(nil, ENV['TESTB'])
 
-    ENV['test'] = 'foo'
+    ENV['testb'] = 'foo'
 
-    assert_equal('foo', ENV['test'])
-    assert_equal(IS_WINDOWS ? 'foo' : nil, ENV['TEST'])
+    assert_equal('foo', ENV['testb'])
+    assert_equal(IS_WINDOWS ? 'foo' : nil, ENV['TESTB'])
 
-    ENV['TEST'] = 'bar'
-    assert_equal('bar', ENV['TEST'])
-    assert_equal(IS_WINDOWS ? 'bar' : 'foo', ENV['test'])
+    ENV['TESTB'] = 'bar'
+    assert_equal('bar', ENV['TESTB'])
+    assert_equal(IS_WINDOWS ? 'bar' : 'foo', ENV['testb'])
 
     assert_raises(TypeError) {
       tmp = ENV[1]
@@ -62,7 +62,7 @@ class TestEnv < Test::Unit::TestCase
     }
 
     assert_raises(TypeError) {
-      ENV['test'] = 0
+      ENV['testb'] = 0
     }
   end
 
