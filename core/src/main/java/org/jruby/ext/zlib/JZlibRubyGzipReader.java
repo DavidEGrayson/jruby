@@ -36,6 +36,7 @@ import org.jruby.RubyException;
 import org.jruby.RubyIO;
 import org.jruby.RubyNumeric;
 import org.jruby.RubyString;
+import org.jruby.RubyTime;
 import org.jruby.anno.FrameField;
 import org.jruby.anno.JRubyClass;
 import org.jruby.anno.JRubyMethod;
@@ -131,6 +132,7 @@ public class JZlibRubyGzipReader extends RubyGzipFile {
             throw re;
         }
 
+        mtime = RubyTime.newTime(runtime, io.getModifiedtime() * 1000);
         position = 0;
         line = 0;
         bufferedStream = new BufferedInputStream(io);
